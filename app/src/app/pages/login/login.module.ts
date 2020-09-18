@@ -10,7 +10,8 @@ import {
   NzButtonModule,
   NzCardModule,
   NzDividerModule,
-  NzAlertModule
+  NzAlertModule,
+  NzModalModule
 } from "ng-zorro-antd";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -26,6 +27,7 @@ import { CommonModule } from "@angular/common";
     NzCardModule,
     NzDividerModule,
     NzAlertModule,
+    NzModalModule,
     LoginRoutingModule
   ],
   declarations: [LoginComponent],

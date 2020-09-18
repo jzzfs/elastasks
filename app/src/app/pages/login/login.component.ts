@@ -6,6 +6,7 @@ import {
 } from "src/app/services/elasticsearch.service";
 import { Router } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
+import { merge } from "rxjs";
 
 @Component({
   selector: "app-login",
@@ -13,6 +14,7 @@ import { HttpErrorResponse } from "@angular/common/http";
   styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
+  isLoginModalVisible = true;
   validateForm!: FormGroup;
   loading = false;
   loginError: any;
@@ -38,12 +40,77 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {}
 
+  private apiKeyShouldDisable() {
+    if (!this.validateForm) {
+      return false;
+    }
+
+    return (
+      (this.validateForm.get("username").value &&
+        this.validateForm.get("username").value.length) ||
+      (this.validateForm.get("password").value &&
+        this.validateForm.get("password").value.length)
+    );
+  }
+
+  private basicAuthShouldDisable() {
+    return (
+      this.validateForm &&
+      this.validateForm.get("apiKey").value &&
+      this.validateForm.get("apiKey").value.length
+    );
+  }
+
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       host: [null, [Validators.required]],
       username: [null],
       password: [null],
       apiKey: [null]
+    });
+
+    if (this.es.hasHost()) {
+      this.isLoginModalVisible = false;
+    }
+
+    this.validateForm.valueChanges.subscribe((_) => {
+      if (this.loginError) {
+        this.loginError = undefined;
+      }
+    });
+
+    merge(
+      this.validateForm.get("username").valueChanges,
+      this.validateForm.get("password").valueChanges
+    ).subscribe((_) => {
+      if (this.apiKeyShouldDisable()) {
+        if (!this.validateForm.get("apiKey").disabled) {
+          this.validateForm.get("apiKey").disable();
+        }
+      } else {
+        if (this.validateForm.get("apiKey").disabled) {
+          this.validateForm.get("apiKey").enable();
+        }
+      }
+    });
+
+    this.validateForm.get("apiKey").valueChanges.subscribe((_) => {
+      if (this.basicAuthShouldDisable()) {
+        if (!this.validateForm.get("username").disabled) {
+          this.validateForm.get("username").disable();
+        }
+        if (!this.validateForm.get("password").disabled) {
+          this.validateForm.get("password").disable();
+        }
+      } else {
+        if (this.validateForm.get("username").disabled) {
+          this.validateForm.get("username").enable();
+        }
+
+        if (this.validateForm.get("password").disabled) {
+          this.validateForm.get("password").enable();
+        }
+      }
     });
   }
 

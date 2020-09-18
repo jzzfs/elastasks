@@ -1,96 +1,112 @@
-<form nz-form
-      [formGroup]="validateForm"
-      (ngSubmit)="submitForm()">
-  <nz-card [nzTitle]="">
-    <nz-form-item>
-      <nz-form-label [nzSm]="6"
-                     [nzXs]="24"
-                     nzFor="host"
-                     nzRequired>Host</nz-form-label>
-      <nz-form-control [nzSm]="14"
+<nz-modal [(nzVisible)]="isLoginModalVisible"
+          [nzFooter]="null"
+          nzTitle="Connect to Host">
+  <form nz-form
+        [formGroup]="validateForm"
+        (ngSubmit)="submitForm()">
+
+    <nz-alert nzType="success"
+              [ngStyle]="{'margin-bottom.px': 20}"
+              [nzCloseable]="true"
+              nzMessage="elasTasks is a client-side application with no server backend.
+              Data lives only on your machine/browser.
+              No information or ES data is sent to any server."></nz-alert>
+
+    <nz-card [nzTitle]="">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6"
                        [nzXs]="24"
-                       nzErrorTip="Please insert a host url">
-        <input nz-input
-               id="host"
-               type="url"
-               formControlName="host"
-               required
-               placeholder="https://my_es_instance_root.com" />
-      </nz-form-control>
-    </nz-form-item>
-  </nz-card>
+                       nzFor="host"
+                       nzRequired>Host (+ port)</nz-form-label>
+        <nz-form-control [nzSm]="14"
+                         [nzXs]="24"
+                         nzErrorTip="Please insert a host url"
+                         nzExtra="Could be http://127.0.0.1:9200 too!">
+          <input nz-input
+                 nzSize="large"
+                 id="host"
+                 type="url"
+                 formControlName="host"
+                 required
+                 placeholder="https://instance.com:9200" />
+        </nz-form-control>
+      </nz-form-item>
+    </nz-card>
 
-  <br>
+    <br>
 
-  <nz-card [nzTitle]="">
-    <nz-divider nzText="Authorize using BasicAuth"></nz-divider>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6"
-                     [nzXs]="24"
-                     nzFor="username">
-        Username</nz-form-label>
-      <nz-form-control [nzSm]="14"
-                       [nzXs]="24">
-        <input nz-input
-               type="text"
-               id="username"
-               autocomplete="off"
-               formControlName="username"
-               (ngModelChange)="updateConfirmValidator()" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6"
-                     [nzXs]="24"
-                     nzFor="password">
-        Password</nz-form-label>
-      <nz-form-control [nzSm]="14"
-                       [nzXs]="24">
-        <input nz-input
-               type="password"
-               id="password"
-               autocomplete="off"
-               formControlName="password"
-               (ngModelChange)="updateConfirmValidator()" />
-      </nz-form-control>
-    </nz-form-item>
+    <nz-card [nzTitle]="">
+      <nz-divider nzText="Authorize using BasicAuth"></nz-divider>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6"
+                       [nzXs]="24"
+                       nzFor="username">
+          Username</nz-form-label>
+        <nz-form-control [nzSm]="14"
+                         [nzXs]="24">
+          <input nz-input
+                 nzSize="large"
+                 type="text"
+                 id="username"
+                 autocomplete="off"
+                 formControlName="username"
+                 (ngModelChange)="updateConfirmValidator()" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6"
+                       [nzXs]="24"
+                       nzFor="password">
+          Password</nz-form-label>
+        <nz-form-control [nzSm]="14"
+                         [nzXs]="24">
+          <input nz-input
+                 nzSize="large"
+                 type="password"
+                 id="password"
+                 autocomplete="off"
+                 formControlName="password"
+                 (ngModelChange)="updateConfirmValidator()" />
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-divider nzText="or using an API key"></nz-divider>
+      <nz-divider nzText="or using an API key"></nz-divider>
 
-    <nz-form-item>
-      <nz-form-label [nzSm]="6"
-                     [nzXs]="24"
-                     nzFor="apiKey">
-        API Key</nz-form-label>
-      <nz-form-control [nzSm]="14"
-                       [nzXs]="24">
-        <input nz-input
-               type="text"
-               id="apiKey"
-               autocomplete="off"
-               formControlName="apiKey"
-               (ngModelChange)="updateConfirmValidator()" />
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6"
+                       [nzXs]="24"
+                       nzFor="apiKey">
+          API Key</nz-form-label>
+        <nz-form-control [nzSm]="14"
+                         [nzXs]="24">
+          <input nz-input
+                 nzSize="large"
+                 type="text"
+                 id="apiKey"
+                 autocomplete="off"
+                 formControlName="apiKey"
+                 (ngModelChange)="updateConfirmValidator()" />
+        </nz-form-control>
+      </nz-form-item>
 
 
-    <nz-form-item nz-row
-                  class="register-area">
-      <nz-form-control [nzSpan]="14"
-                       [nzOffset]="6">
-        <button nz-button
-                [nzLoading]="loading"
-                nzType="primary">Go!</button>
-      </nz-form-control>
-    </nz-form-item>
+      <nz-form-item nz-row
+                    class="register-area">
+        <nz-form-control [nzSpan]="14"
+                         [nzOffset]="6">
+          <button nz-button
+                  nzSize="large"
+                  [nzLoading]="loading"
+                  nzType="primary">Go!</button>
+        </nz-form-control>
+      </nz-form-item>
 
-    <nz-card [nzTitle]=""
-             *ngIf="loginError">
-      <nz-alert nzType="error"
+      <nz-alert *ngIf="loginError"
+                nzType="error"
                 nzMessage="Error"
                 [nzDescription]="loginError"
                 nzShowIcon> </nz-alert>
-    </nz-card>
 
-  </nz-card>
-</form>
+    </nz-card>
+  </form>
+</nz-modal>

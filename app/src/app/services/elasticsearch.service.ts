@@ -18,7 +18,14 @@ export class ElasticsearchService {
 
   constructor(private http: HttpClient) {}
 
+  public hasHost() {
+    return this.host && this.host.length;
+  }
+
   private get host() {
+    if (!this.client) {
+      return undefined;
+    }
     return this.client.host.endsWith("/")
       ? this.client.host.slice(0, -1)
       : this.client.host;
