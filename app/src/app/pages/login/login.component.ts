@@ -29,7 +29,12 @@ export class LoginComponent implements OnInit {
     private es: ElasticsearchService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    if (this.route.snapshot.queryParamMap.get("force")) {
+      this.es.flushHost();
+      this.isLoginModalVisible = true;
+    }
+  }
 
   private apiKeyShouldDisable() {
     if (!this.validateForm) {
@@ -55,15 +60,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe({
-      next: (params) => {
-        const force_login = params.get("force");
-        if (force_login) {
-          this.isLoginModalVisible = true;
-        }
-      }
-    });
-
     this.validateForm = this.fb.group({
       host: [null, [Validators.required]],
       username: [null],
@@ -141,6 +137,7 @@ export class LoginComponent implements OnInit {
     }
 
     if (!this.validateForm.valid) {
+      console.warn("invalid form", this.validateForm);
       this.loading = false;
       return false;
     }

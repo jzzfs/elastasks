@@ -7,6 +7,11 @@ const routes: Routes = [
     path: "login",
     loadChildren: () =>
       import("./pages/login/login.module").then((m) => m.LoginModule)
+  },
+  {
+    path: "tasks",
+    loadChildren: () =>
+      import("./pages/tasks/tasks.module").then((m) => m.TasksModule)
   }
 ];
 

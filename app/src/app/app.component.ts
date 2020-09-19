@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { ElasticsearchService } from "./services/elasticsearch.service";
+import { filter } from "rxjs/operators";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,8 +13,11 @@ export class AppComponent {
   currentHostName: string;
 
   constructor(private es: ElasticsearchService) {
-    this.es.hostChanged().subscribe((client) => {
-      this.currentHostName = client.host;
-    });
+    this.es
+      .hostChanged()
+      .pipe(filter(Boolean))
+      .subscribe(({ host }) => {
+        this.currentHostName = host;
+      });
   }
 }

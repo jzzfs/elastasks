@@ -17,27 +17,36 @@ export interface IClientSettings {
 })
 export class ElasticsearchService {
   private client: IClientSettings;
-  private host$: BehaviorSubject<IClientSettings> = new BehaviorSubject(
-    {} as IClientSettings
-  );
+  private client$: BehaviorSubject<IClientSettings> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {
-    const client_from_storage = window.sessionStorage.getItem("clientOpts");
+    const client_from_storage = window.localStorage.getItem("clientOpts");
     if (client_from_storage) {
       this.client = JSON.parse(client_from_storage);
     }
+
+    this.client$.subscribe((client) => {
+      if (!client || !client.host) {
+        window.localStorage.removeItem("clientOpts");
+      }
+    });
   }
 
   public hostChanged() {
-    return this.host$;
+    return this.client$;
   }
 
   public hasHost() {
     return this.host && this.host.length;
   }
 
+  public flushHost() {
+    this.client = null;
+    this.client$.next(this.client);
+  }
+
   private get host() {
-    if (!this.client) {
+    if (!this.client || !this.client.host) {
       return undefined;
     }
     return this.client.host.endsWith("/")
@@ -79,8 +88,8 @@ export class ElasticsearchService {
   }
 
   initClient(opts?: IClientSettings) {
-    if (this.client) {
-      this.host$.next(this.client);
+    if (this.client && this.client.host) {
+      this.client$.next(this.client);
       return;
     }
 
@@ -95,7 +104,7 @@ export class ElasticsearchService {
           })
     };
 
-    this.host$.next(this.client);
+    this.client$.next(this.client);
   }
 
   async ping() {
@@ -107,18 +116,15 @@ export class ElasticsearchService {
           .get(`${this.host}`, { headers: this.getCommonHeaders() })
           .toPromise();
       } catch (err) {
-        error = error;
+        error = err;
       }
 
       if (response && typeof response.tagline === "string") {
-        resolve(response);
+        window.localStorage.setItem("clientOpts", JSON.stringify(this.client));
 
-        window.sessionStorage.setItem(
-          "clientOpts",
-          JSON.stringify(this.client)
-        );
+        return resolve(response);
       } else {
-        reject(error);
+        return reject(error);
       }
     });
   }
