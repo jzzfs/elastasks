@@ -1,4 +1,8 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from "@angular/core";
 import { ElasticsearchService } from "./services/elasticsearch.service";
 import { filter } from "rxjs/operators";
 
@@ -12,12 +16,13 @@ export class AppComponent {
   isCollapsed = false;
   currentHostName: string;
 
-  constructor(private es: ElasticsearchService) {
+  constructor(private es: ElasticsearchService, private cd: ChangeDetectorRef) {
     this.es
       .hostChanged()
       .pipe(filter(Boolean))
       .subscribe(({ host }) => {
         this.currentHostName = host;
+        this.cd.detectChanges();
       });
   }
 }

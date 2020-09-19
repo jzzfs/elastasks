@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
+import { ITasksGroupedByParentsResponse } from "../interfaces/tasks";
 
 export interface IClientSettings {
   host: string;
@@ -24,12 +25,6 @@ export class ElasticsearchService {
     if (client_from_storage) {
       this.client = JSON.parse(client_from_storage);
     }
-
-    this.client$.subscribe((client) => {
-      if (!client || !client.host) {
-        window.localStorage.removeItem("clientOpts");
-      }
-    });
   }
 
   public hostChanged() {
@@ -41,6 +36,7 @@ export class ElasticsearchService {
   }
 
   public flushHost() {
+    window.localStorage.removeItem("clientOpts");
     this.client = null;
     this.client$.next(this.client);
   }
@@ -129,8 +125,10 @@ export class ElasticsearchService {
     });
   }
 
-  async fetchTasks(group_by: "nodes" | "parents" | "none" = "none") {
-    this.http
+  async fetchTasks(
+    group_by: "nodes" | "parents" | "none" = "parents"
+  ): Promise<ITasksGroupedByParentsResponse> {
+    return this.http
       .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
         headers: this.getCommonHeaders()
       })

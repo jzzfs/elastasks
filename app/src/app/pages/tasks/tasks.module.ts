@@ -7,7 +7,12 @@ import {
   NzInputModule,
   NzButtonModule,
   NzCardModule,
-  NzModalModule
+  NzModalModule,
+  NzEmptyModule,
+  NzDropDownModule,
+  NzDividerModule,
+  NzTableModule,
+  NzBadgeModule
 } from "ng-zorro-antd";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -21,6 +26,11 @@ import { CommonModule } from "@angular/common";
     NzButtonModule,
     NzCardModule,
     NzModalModule,
+    NzEmptyModule,
+    NzDropDownModule,
+    NzDividerModule,
+    NzBadgeModule,
+    NzTableModule,
     TasksRoutingModule
   ],
   declarations: [TasksComponent],
