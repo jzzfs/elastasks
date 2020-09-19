@@ -1,7 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
-import { ITasksGroupedByParentsResponse } from "../interfaces/tasks";
+import {
+  ITasksGroupedByParentsResponse,
+  ITasksResponseType,
+  Task
+} from "../interfaces/tasks";
+import { transformTasksResponse } from "../pages/tasks/helpers";
 
 export interface IClientSettings {
   host: string;
@@ -126,10 +131,36 @@ export class ElasticsearchService {
   }
 
   async fetchTasks(
-    group_by: "nodes" | "parents" | "none" = "parents"
-  ): Promise<ITasksGroupedByParentsResponse> {
-    return this.http
+    group_by: ITasksResponseType = "parents"
+  ): Promise<Task[] | Error> {
+    let resp_promise: Promise<ITasksGroupedByParentsResponse | any>;
+
+    resp_promise = this.http
       .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
+        headers: this.getCommonHeaders()
+      })
+      .toPromise();
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        const es_response = await resp_promise;
+        if (es_response) {
+          return resolve(transformTasksResponse(es_response, group_by));
+        } else {
+          return reject(new Error("whoops"));
+        }
+      } catch (err) {
+        return reject(err);
+      }
+    });
+  }
+
+  async cancelTask(task_path: string) {
+    return this.http
+      .post(`${this.host}/_tasks/${task_path}/_cancel`, null, {
+        params: {
+          // wait_for_completion: "true"
+        },
         headers: this.getCommonHeaders()
       })
       .toPromise();

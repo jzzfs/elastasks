@@ -1,3 +1,4 @@
+export type ITasksResponseType = "nodes" | "parents" | "none";
 export interface ITasksGroupedByParentsResponse {
   tasks?: { [key: string]: Task };
 }
@@ -17,6 +18,9 @@ export interface Task {
   headers?: TaskHeaders;
   children?: TaskChild[];
   parent_task_id?: string;
+  expand?: boolean;
+  level?: number;
+  parent?: Task;
 }
 
 export interface TaskChild {
@@ -33,7 +37,10 @@ export interface TaskChild {
   cancellable?: boolean;
   parent_task_id?: string;
   headers?: TaskHeaders;
-  children?: TaskChild2n[];
+  children?: TaskChild[] | TaskChild2n[];
+  expand?: boolean;
+  level?: number;
+  parent?: Task;
 }
 
 export interface TaskChild2n {
@@ -50,6 +57,7 @@ export interface TaskChild2n {
   parent_task_id?: string;
   headers?: TaskHeaders;
   children?: TaskChild3n[];
+  expand?: boolean;
 }
 
 export interface TaskChild3n {

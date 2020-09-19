@@ -5,3 +5,14 @@
 .ant-card-body {
   padding: 12px;
 }
+
+tr td:first-child {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+tr.darker,
+td.darker {
+  background: #f6f6f6;
+}

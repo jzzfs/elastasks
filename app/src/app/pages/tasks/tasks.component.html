@@ -1,89 +1,68 @@
-<ng-container *ngIf="!(tasksList$ | async).length">
-    <nz-empty></nz-empty>
+<ng-container *ngIf="tasksList && !tasksList.length">
+    <nz-spin [nzSpinning]="true">
+        <nz-empty></nz-empty>
+    </nz-spin>
 </ng-container>
 
-<ng-container *ngIf="(tasksList$ | async).length">
-    <nz-table #nestedTable
-              [nzData]="tasksList$ | async"
-              [nzPageSize]="10">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Node</th>
-                <th>Type</th>
-                <th>Action</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Running Time</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-template ngFor
-                         let-data
-                         [ngForOf]="nestedTable.data">
+<ng-container *ngIf="tasksList && tasksList.length">
+    <nz-spin [nzSpinning]="loading">
+        <nz-table #expandTable
+                  nzBordered
+                  nzSize="small"
+                  nzTableLayout="fixed"
+                  [nzData]="tasksList"
+                  [nzPageSize]="50"
+                  [nzLoading]="!tasksList.length"
+                  [nzScroll]="{ y: '65vh' }">
+            <thead>
                 <tr>
-                    <td [(nzExpand)]="data.expand"></td>
-                    <td>{{ data.node }}</td>
-                    <td>{{ data.type }}</td>
-                    <td>{{ data.action }}</td>
-                    <td>{{ data.status }}</td>
-                    <td>{{ data.description }}</td>
-                    <td>{{ data.running_time }}</td>
-                    <td>
-                        <a>Publish</a>
-                    </td>
+                    <th>Task ID</th>
+                    <th>Action</th>
+                    <th>Description</th>
+                    <th nzWidth="95px">Start</th>
+                    <th nzWidth="80px">Running</th>
+                    <th nzRight
+                        nzWidth="95px">Action</th>
                 </tr>
-                <tr [nzExpand]="data.children">
-                    <nz-table #innerTable
-                              [nzData]="data.children"
-                              nzSize="middle"
-                              [nzShowPagination]="false">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Name</th>
-                                <th>Status</th>
-                                <th>Upgrade Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-        <tbody>
-            <tr *ngFor="let data of innerTable.data">
-                <td>{{ data.date }}</td>
-                <td>{{ data.name }}</td>
-                <td>
-                    <nz-badge [nzStatus]="'success'"
-                              [nzText]="'Finished'"></nz-badge>
-                </td>
-                <td>{{ data.upgradeNum }}</td>
-                <td>
-                    <span class="table-operation">
-                        <a nz-dropdown
-                           class="operation"
-                           [nzDropdownMenu]="menu"> Pause <i nz-icon
-                               nzType="down"></i> </a>
-                        <nz-dropdown-menu #menu="nzDropdownMenu">
-                            <ul nz-menu>
-                                <li nz-menu-item>
-                                    <a>Action 1</a>
-                                </li>
-                                <li nz-menu-item>
-                                    <a>Action 2</a>
-                                </li>
-                            </ul>
-                        </nz-dropdown-menu>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a class="operation">Stop</a>
-                        <nz-divider nzType="vertical"></nz-divider>
-                        <a>More</a>
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </nz-table>
-    </tr>
-    </ng-template>
-    </tbody>
-    </nz-table>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of expandTable.data; let i = index">
+                    <ng-container *ngFor="let item of taskTree[data.id.toString()]">
+                        <tr [ngClass]="{'darker': item.level === 0}"
+                            *ngIf="(item.parent && item.parent.expand) || !item.parent">
+                            <td [nzIndentSize]="item.level! * 20"
+                                [nzShowExpand]="!!item.children"
+                                [(nzExpand)]="item.expand"
+                                (nzExpandChange)="collapse(taskTree[data.id], item, $event)">
+                                {{ item.id }}
+                            </td>
+                            <td>{{ item.action }}</td>
+                            <td nzBreakWord>{{ item.description }}</td>
+                            <td>{{ item.start_time | date:'MM/dd/yy  HH:mm:ss' }}</td>
+                            <td>{{ item.running_time }}</td>
+                            <ng-template #iconTpl>
+                                <i nz-icon
+                                   style="color: red;"
+                                   nzType="question-circle-o"></i>
+                            </ng-template>
+                            <td nzRight
+                                [ngClass]="{'darker': item.level === 0}"> <button #cancelBtn
+                                        nz-button
+                                        nzType="primary"
+                                        [disabled]="!item.cancellable"
+                                        [nzIcon]="iconTpl"
+                                        nz-popconfirm
+                                        nzPopconfirmTitle="Are you sure?"
+                                        nzPopconfirmPlacement="left"
+                                        nzCancelText="Abort"
+                                        nzOkText="Yes, cancel!"
+                                        (nzOnConfirm)="doCancelTask(cancelBtn, item.node, item.id)"
+                                        nzDanger>Cancel</button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </nz-table>
+    </nz-spin>
 </ng-container>

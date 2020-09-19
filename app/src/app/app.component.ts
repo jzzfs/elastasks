@@ -1,13 +1,8 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { ElasticsearchService } from "./services/elasticsearch.service";
-import { filter } from "rxjs/operators";
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
@@ -16,13 +11,9 @@ export class AppComponent {
   isCollapsed = false;
   currentHostName: string;
 
-  constructor(private es: ElasticsearchService, private cd: ChangeDetectorRef) {
-    this.es
-      .hostChanged()
-      .pipe(filter(Boolean))
-      .subscribe(({ host }) => {
-        this.currentHostName = host;
-        this.cd.detectChanges();
-      });
+  constructor(private es: ElasticsearchService) {
+    this.es.hostChanged().subscribe((client) => {
+      this.currentHostName = !client || !client.host ? undefined : client.host;
+    });
   }
 }
