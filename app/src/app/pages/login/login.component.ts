@@ -24,16 +24,6 @@ export class LoginComponent implements OnInit {
     Promise.resolve().then(() => {});
   }
 
-  // TOdo
-  // confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
-  //   if (!this.validateForm.controls.apiKey.value) {
-  //     return { required: true };
-  //   } else if (control.value !== this.validateForm.controls.password.value) {
-  //     return { confirm: true, error: true };
-  //   }
-  //   return {};
-  // };
-
   constructor(
     private fb: FormBuilder,
     private es: ElasticsearchService,
@@ -55,9 +45,11 @@ export class LoginComponent implements OnInit {
 
   private basicAuthShouldDisable() {
     return (
-      this.validateForm &&
-      this.validateForm.get("apiKey").value &&
-      this.validateForm.get("apiKey").value.length
+      (this.validateForm &&
+        this.validateForm.get("apiKey").value &&
+        this.validateForm.get("apiKey").value.length) ||
+      (this.validateForm.get("apiKeyId").value &&
+        this.validateForm.get("apiKeyId").value.length)
     );
   }
 
@@ -66,7 +58,8 @@ export class LoginComponent implements OnInit {
       host: [null, [Validators.required]],
       username: [null],
       password: [null],
-      apiKey: [null]
+      apiKey: [null],
+      apiKeyId: [null]
     });
 
     if (this.es.hasHost()) {
@@ -87,14 +80,25 @@ export class LoginComponent implements OnInit {
         if (!this.validateForm.get("apiKey").disabled) {
           this.validateForm.get("apiKey").disable();
         }
+
+        if (!this.validateForm.get("apiKeyId").disabled) {
+          this.validateForm.get("apiKeyId").disable();
+        }
       } else {
         if (this.validateForm.get("apiKey").disabled) {
           this.validateForm.get("apiKey").enable();
         }
+
+        if (this.validateForm.get("apiKeyId").disabled) {
+          this.validateForm.get("apiKeyId").enable();
+        }
       }
     });
 
-    this.validateForm.get("apiKey").valueChanges.subscribe((_) => {
+    merge(
+      this.validateForm.get("apiKey").valueChanges,
+      this.validateForm.get("apiKeyId").valueChanges
+    ).subscribe((_) => {
       if (this.basicAuthShouldDisable()) {
         if (!this.validateForm.get("username").disabled) {
           this.validateForm.get("username").disable();
@@ -128,7 +132,24 @@ export class LoginComponent implements OnInit {
       return false;
     }
 
-    this.es.initClient(this.validateForm.getRawValue() as IClientSettings);
+    const tmp = this.validateForm.getRawValue();
+    const host = tmp.host;
+    delete tmp.host;
+
+    const raw_form_value = {
+      host,
+      auth: {
+        ...tmp
+      }
+    } as IClientSettings;
+
+    Object.entries(this.validateForm.controls).map(([name, control]) => {
+      if (control.disabled) {
+        delete raw_form_value.auth[name];
+      }
+    });
+
+    this.es.initClient(raw_form_value);
 
     try {
       const r = (await this.es.ping()) as any;

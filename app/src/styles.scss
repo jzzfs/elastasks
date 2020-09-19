@@ -7,3 +7,26 @@ app-login {
   //box-shadow: 0 4px 7px -3px #ccc;
   border: 1px solid #ddd;
 }
+
+.ant-form-item-extra {
+  font-size: 12px;
+}
+
+.vert-divider {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  line-height: 100px;
+  text-align: center;
+  width: 100%;
+
+  nz-divider {
+    position: absolute;
+    top: 35%;
+    margin: 0 !important;
+  }
+}
+
+nz-form-item + nz-alert {
+  margin-top: 20px;
+}

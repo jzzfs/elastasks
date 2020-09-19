@@ -1,6 +1,7 @@
 <nz-modal [(nzVisible)]="isLoginModalVisible"
           [nzFooter]="null"
-          nzTitle="Connect to Host">
+          nzTitle="Connect to Host"
+          nzWidth="960px">
   <form nz-form
         [formGroup]="validateForm"
         (ngSubmit)="submitForm()">
@@ -14,11 +15,11 @@
 
     <nz-card [nzTitle]="">
       <nz-form-item>
-        <nz-form-label [nzSm]="6"
+        <nz-form-label [nzSm]="3"
                        [nzXs]="24"
                        nzFor="host"
                        nzRequired>Host (+ port)</nz-form-label>
-        <nz-form-control [nzSm]="14"
+        <nz-form-control [nzSm]="19"
                          [nzXs]="24"
                          nzErrorTip="Please insert a host url"
                          nzExtra="Could be http://127.0.0.1:9200 too!">
@@ -36,68 +37,97 @@
     <br>
 
     <nz-card [nzTitle]="">
-      <nz-divider nzText="Authorize using BasicAuth"></nz-divider>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6"
-                       [nzXs]="24"
-                       nzFor="username">
-          Username</nz-form-label>
-        <nz-form-control [nzSm]="14"
-                         [nzXs]="24">
-          <input nz-input
-                 nzSize="large"
-                 type="text"
-                 id="username"
-                 autocomplete="off"
-                 formControlName="username"
-                 (ngModelChange)="updateConfirmValidator()" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6"
-                       [nzXs]="24"
-                       nzFor="password">
-          Password</nz-form-label>
-        <nz-form-control [nzSm]="14"
-                         [nzXs]="24">
-          <input nz-input
-                 nzSize="large"
-                 type="password"
-                 id="password"
-                 autocomplete="off"
-                 formControlName="password"
-                 (ngModelChange)="updateConfirmValidator()" />
-        </nz-form-control>
-      </nz-form-item>
+      <div nz-row>
+        <div nz-col
+             nzSpan="11">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6"
+                           [nzXs]="24"
+                           nzFor="username">
+              Username</nz-form-label>
+            <nz-form-control [nzSm]="14"
+                             [nzXs]="24">
+              <input nz-input
+                     nzSize="large"
+                     type="text"
+                     id="username"
+                     autocomplete="off"
+                     formControlName="username"
+                     (ngModelChange)="updateConfirmValidator()" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6"
+                           [nzXs]="24"
+                           nzFor="password">
+              Password</nz-form-label>
+            <nz-form-control [nzSm]="14"
+                             [nzXs]="24">
+              <input nz-input
+                     nzSize="large"
+                     type="password"
+                     id="password"
+                     autocomplete="off"
+                     formControlName="password"
+                     (ngModelChange)="updateConfirmValidator()" />
+            </nz-form-control>
+          </nz-form-item>
 
-      <nz-divider nzText="or using an API key"></nz-divider>
+        </div>
+        <div nz-col
+             nzSpan="2">
+          <span class="vert-divider">
+            <nz-divider nzText="OR"></nz-divider>
+          </span>
+        </div>
+        <div nz-col
+             nzSpan="11">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6"
+                           [nzXs]="24"
+                           nzFor="apiKeyId">
+              API Key ID</nz-form-label>
+            <nz-form-control [nzSm]="14"
+                             [nzXs]="24">
+              <input nz-input
+                     nzSize="large"
+                     type="text"
+                     id="apiKeyId"
+                     autocomplete="off"
+                     formControlName="apiKeyId"
+                     (ngModelChange)="updateConfirmValidator()" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6"
+                           [nzXs]="24"
+                           nzFor="apiKey">
+              API Key</nz-form-label>
+            <nz-form-control [nzSm]="14"
+                             [nzXs]="24">
+              <input nz-input
+                     nzSize="large"
+                     type="text"
+                     id="apiKey"
+                     autocomplete="off"
+                     formControlName="apiKey"
+                     (ngModelChange)="updateConfirmValidator()" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </nz-card>
 
-      <nz-form-item>
-        <nz-form-label [nzSm]="6"
-                       [nzXs]="24"
-                       nzFor="apiKey">
-          API Key</nz-form-label>
-        <nz-form-control [nzSm]="14"
-                         [nzXs]="24">
-          <input nz-input
-                 nzSize="large"
-                 type="text"
-                 id="apiKey"
-                 autocomplete="off"
-                 formControlName="apiKey"
-                 (ngModelChange)="updateConfirmValidator()" />
-        </nz-form-control>
-      </nz-form-item>
+    <br>
 
-
-      <nz-form-item nz-row
-                    class="register-area">
-        <nz-form-control [nzSpan]="14"
-                         [nzOffset]="6">
+    <div nz-col
+         nzSpan="24">
+      <nz-form-item nz-row>
+        <nz-form-control [nzSpan]="14">
           <button nz-button
                   nzSize="large"
                   [nzLoading]="loading"
-                  nzType="primary">Go!</button>
+                  nzType="primary">Execute!</button>
         </nz-form-control>
       </nz-form-item>
 
@@ -106,7 +136,9 @@
                 nzMessage="Error"
                 [nzDescription]="loginError"
                 nzShowIcon> </nz-alert>
+    </div>
 
-    </nz-card>
+
+
   </form>
 </nz-modal>

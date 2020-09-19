@@ -1,11 +1,7 @@
-[nz-form] {
-  max-width: 600px;
+.ant-form-item:last-of-type {
+  margin-bottom: 0;
 }
 
-.phone-select {
-  width: 70px;
-}
-
-.register-are {
-  margin-bottom: 8px;
+.ant-card-body {
+  padding: 12px;
 }

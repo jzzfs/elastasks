@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { BehaviorSubject } from "rxjs";
 
 export interface IClientSettings {
   host: string;
@@ -7,6 +8,7 @@ export interface IClientSettings {
     username?: string;
     password?: string;
     apiKey?: string;
+    apiKeyId?: string;
   };
 }
 
@@ -15,6 +17,9 @@ export interface IClientSettings {
 })
 export class ElasticsearchService {
   private client: IClientSettings;
+  private host$: BehaviorSubject<IClientSettings> = new BehaviorSubject(
+    {} as IClientSettings
+  );
 
   constructor(private http: HttpClient) {}
 
@@ -32,12 +37,36 @@ export class ElasticsearchService {
   }
 
   private constructBasicAuthHeader() {
+    if (!this.client.auth.username || !this.client.auth.password) {
+      return {};
+    }
+
     const b64token = btoa(
       `${this.client.auth.username}:${this.client.auth.password}`
     );
     return {
       Authorization: `Basic ${b64token}`
     };
+  }
+
+  private constructApiKeyHeader() {
+    if (!this.client.auth.apiKey || !this.client.auth.apiKeyId) {
+      return {};
+    }
+
+    const b64token = btoa(
+      `${this.client.auth.apiKeyId}:${this.client.auth.apiKey}`
+    );
+    return {
+      Authorization: `ApiKey ${b64token}`
+    };
+  }
+
+  private getCommonHeaders() {
+    return new HttpHeaders({
+      ...this.constructBasicAuthHeader(),
+      ...this.constructApiKeyHeader()
+    });
   }
 
   initClient(opts: IClientSettings) {
@@ -51,15 +80,21 @@ export class ElasticsearchService {
               : { username: opts.auth.username, password: opts.auth.password }
           })
     };
+
+    this.host$.next(this.client);
   }
 
   async ping() {
-    return this.http.get(`${this.host}`).toPromise();
+    return this.http
+      .get(`${this.host}`, { headers: this.getCommonHeaders() })
+      .toPromise();
   }
 
   async fetchTasks(group_by: "nodes" | "parents" | "none" = "none") {
     this.http
-      .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`)
+      .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
+        headers: this.getCommonHeaders()
+      })
       .toPromise();
   }
 }
