@@ -21,7 +21,16 @@ export class ElasticsearchService {
     {} as IClientSettings
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const client_from_storage = window.sessionStorage.getItem("clientOpts");
+    if (client_from_storage) {
+      this.client = JSON.parse(client_from_storage);
+    }
+  }
+
+  public hostChanged() {
+    return this.host$;
+  }
 
   public hasHost() {
     return this.host && this.host.length;
@@ -69,7 +78,12 @@ export class ElasticsearchService {
     });
   }
 
-  initClient(opts: IClientSettings) {
+  initClient(opts?: IClientSettings) {
+    if (this.client) {
+      this.host$.next(this.client);
+      return;
+    }
+
     this.client = {
       host: opts.host,
       ...(!opts.auth
@@ -85,9 +99,28 @@ export class ElasticsearchService {
   }
 
   async ping() {
-    return this.http
-      .get(`${this.host}`, { headers: this.getCommonHeaders() })
-      .toPromise();
+    return new Promise(async (resolve, reject) => {
+      let response, error;
+
+      try {
+        response = await this.http
+          .get(`${this.host}`, { headers: this.getCommonHeaders() })
+          .toPromise();
+      } catch (err) {
+        error = error;
+      }
+
+      if (response && typeof response.tagline === "string") {
+        resolve(response);
+
+        window.sessionStorage.setItem(
+          "clientOpts",
+          JSON.stringify(this.client)
+        );
+      } else {
+        reject(error);
+      }
+    });
   }
 
   async fetchTasks(group_by: "nodes" | "parents" | "none" = "none") {

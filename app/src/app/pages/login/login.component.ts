@@ -4,7 +4,7 @@ import {
   ElasticsearchService,
   IClientSettings
 } from "src/app/services/elasticsearch.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
 import { merge } from "rxjs";
 
@@ -27,7 +27,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private es: ElasticsearchService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   private apiKeyShouldDisable() {
@@ -54,6 +55,15 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe({
+      next: (params) => {
+        const force_login = params.get("force");
+        if (force_login) {
+          this.isLoginModalVisible = true;
+        }
+      }
+    });
+
     this.validateForm = this.fb.group({
       host: [null, [Validators.required]],
       username: [null],
@@ -64,6 +74,9 @@ export class LoginComponent implements OnInit {
 
     if (this.es.hasHost()) {
       this.isLoginModalVisible = false;
+      this.es.initClient();
+      this.router.navigate(["/tasks"]);
+      return;
     }
 
     this.validateForm.valueChanges.subscribe((_) => {
@@ -154,7 +167,10 @@ export class LoginComponent implements OnInit {
     try {
       const r = (await this.es.ping()) as any;
       if (r && typeof r.tagline === "string") {
-        this.router.navigate(["/monitor"]);
+        this.validateForm.reset();
+        this.loading = false;
+        this.isLoginModalVisible = false;
+        this.router.navigate(["/tasks"]);
       } else {
         this.loading = false;
         this.loginError = r;

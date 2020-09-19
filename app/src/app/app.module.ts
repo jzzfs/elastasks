@@ -14,6 +14,7 @@ import { en_US } from "ng-zorro-antd/i18n";
 import { registerLocaleData, CommonModule } from "@angular/common";
 import en from "@angular/common/locales/en";
 import { ElasticsearchService } from "./services/elasticsearch.service";
+import { NzAlertModule } from "ng-zorro-antd";
 
 registerLocaleData(en);
 
@@ -26,6 +27,7 @@ registerLocaleData(en);
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
+    NzAlertModule,
     HttpClientModule,
     BrowserAnimationsModule
   ],

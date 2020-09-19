@@ -21,27 +21,23 @@
         <ul>
           <li nz-menu-item
               nzMatchRouter>
-            <a routerLink="/login">Login</a>
+            <a routerLink="/login"
+               [queryParams]="{force: true}">Login</a>
           </li>
           <li nz-menu-item
               nzMatchRouter>
-            <a routerLink="/monitor">Monitor</a>
+            <a routerLink="/tasks">Tasks</a>
           </li>
         </ul>
       </li>
     </ul>
+    <nz-alert *ngIf="currentHostName"
+              class="successfully-connected"
+              nzType="success"
+              [nzMessage]="currentHostName"
+              nzShowIcon></nz-alert>
   </nz-sider>
   <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger"
-              (click)="isCollapsed = !isCollapsed">
-          <i class="trigger"
-             nz-icon
-             [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
-        </span>
-      </div>
-    </nz-header>
     <nz-content>
       <div class="inner-content">
         <router-outlet></router-outlet>
