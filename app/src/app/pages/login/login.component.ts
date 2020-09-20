@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.validateForm = this.fb.group({
       host: [null, [Validators.required]],
       username: [null],
@@ -71,8 +71,17 @@ export class LoginComponent implements OnInit {
     if (this.es.hasHost()) {
       this.isLoginModalVisible = false;
       this.es.initClient();
-      this.router.navigate(["/tasks"]);
-      return;
+
+      const r = (await this.es.ping()) as any;
+      if (r && typeof r.tagline === "string") {
+        this.router.navigate(["/tasks"]);
+        return;
+      } else {
+        this.validateForm.reset();
+        this.loading = false;
+        this.isLoginModalVisible = true;
+        this.loginError = `Could not ping ${this.es.rawHost}. Please retry.`;
+      }
     }
 
     this.validateForm.valueChanges.subscribe((_) => {

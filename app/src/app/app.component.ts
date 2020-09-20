@@ -1,11 +1,16 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ViewEncapsulation
+} from "@angular/core";
 import { ElasticsearchService } from "./services/elasticsearch.service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.Default,
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  styleUrls: ["./app.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
   isCollapsed = false;

@@ -81,6 +81,11 @@ export class TasksComponent implements OnInit {
   async ngOnInit() {
     if (this.es.hasHost()) {
       this.es.initClient();
+      const r = (await this.es.ping()) as any;
+      if (!r || (r && typeof r.tagline !== "string")) {
+        this.router.navigate(["/login"]);
+        return;
+      }
     } else {
       this.router.navigate(["/login"], { queryParams: { force: true } });
       return;

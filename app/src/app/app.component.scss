@@ -79,4 +79,11 @@ nz-content {
   margin: 0 30px;
   position: absolute;
   bottom: 20px;
+
+  .ant-alert {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 190px;
+  }
 }

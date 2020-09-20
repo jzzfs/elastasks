@@ -7,6 +7,7 @@ import {
   Task
 } from "../interfaces/tasks";
 import { transformTasksResponse } from "../pages/tasks/helpers";
+import { isLocalNetwork } from "./helpers";
 
 export interface IClientSettings {
   host: string;
@@ -26,10 +27,19 @@ export class ElasticsearchService {
   private client$: BehaviorSubject<IClientSettings> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {
+    const client_from_storage = this.clientFromStorage();
+    if (client_from_storage) {
+      this.client = client_from_storage;
+    }
+  }
+
+  private clientFromStorage() {
     const client_from_storage = window.localStorage.getItem("clientOpts");
     if (client_from_storage) {
-      this.client = JSON.parse(client_from_storage);
+      return JSON.parse(client_from_storage);
     }
+
+    return undefined;
   }
 
   public hostChanged() {
@@ -46,13 +56,28 @@ export class ElasticsearchService {
     this.client$.next(this.client);
   }
 
+  public get rawHost() {
+    if (!this.client || !this.client.host) {
+      return undefined;
+    }
+
+    return this.client.host;
+  }
+
   private get host() {
     if (!this.client || !this.client.host) {
       return undefined;
     }
-    return this.client.host.endsWith("/")
+    const actual_host = this.client.host.endsWith("/")
       ? this.client.host.slice(0, -1)
       : this.client.host;
+
+    if (isLocalNetwork(actual_host)) {
+      return actual_host;
+    }
+
+    // wrap due to Allow-Acces-Origin reasons
+    return `https://cors-anywhere.herokuapp.com/${actual_host}`;
   }
 
   private constructBasicAuthHeader() {
@@ -89,9 +114,8 @@ export class ElasticsearchService {
   }
 
   initClient(opts?: IClientSettings) {
-    if (this.client && this.client.host) {
-      this.client$.next(this.client);
-      return;
+    if (!opts && this.clientFromStorage()) {
+      opts = this.clientFromStorage();
     }
 
     this.client = {
@@ -104,8 +128,6 @@ export class ElasticsearchService {
               : { username: opts.auth.username, password: opts.auth.password }
           })
     };
-
-    this.client$.next(this.client);
   }
 
   async ping() {
@@ -122,10 +144,10 @@ export class ElasticsearchService {
 
       if (response && typeof response.tagline === "string") {
         window.localStorage.setItem("clientOpts", JSON.stringify(this.client));
-
+        this.client$.next(this.client);
         return resolve(response);
       } else {
-        return reject(error);
+        return resolve(error);
       }
     });
   }
