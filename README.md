@@ -1,6 +1,6 @@
 <p align="center" style="text-align: center">
   <a href="https://elastasks.vercel.app/" style="text-align: center">
-    <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -20px">🔦</h3>
+    <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -45px">🔦</h3>
     <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -10px">elasTasks</h3>
   </a>
   <p align="center">The missing UI wrapper around selected parts of the ElasticSearch Tasks API</p>
@@ -8,7 +8,7 @@
 
 ---
 
-![Demo](https://i.ibb.co/XDdGLPx/download-2.png)
+![Demo](https://github.com/jzzfs/elastasks/blob/master/demo.gif)
 
 ---
 
@@ -22,10 +22,26 @@ Inspired by a [closed Kibana github issue](https://github.com/elastic/kibana/iss
 
 On the web:
 
-- Visit [elastasks.vercel.app](https://elastasks.vercel.app/)
+1. Visit [elastasks.vercel.app](https://elastasks.vercel.app/)
 
 Locally:
 
 1. [Clone](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github) this repository
 2. `cd app`
 3. `npm install && npm run start`
+
+## Privacy
+
+elasTasks is a client-side application with no server backend. Data lives only on your machine/browser. No information or ES data is sent to any server.
+
+When connecting to an ElasticSearch host you may opt out of [CorsAnywhere](https://github.com/Rob--W/cors-anywhere/) -- a NodeJS reverse proxy which adds CORS headers to the proxied request.
+
+## Contributing
+
+Pull requests are welcome.
+
+## Support
+
+If this piece of software brought value to you/your organization,
+
+<a href="https://www.buymeacoffee.com/joejoe" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-white.png" alt="Buy Me A Coffee" style="width: 150px !important;" ></a>
