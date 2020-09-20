@@ -44,4 +44,4 @@ Pull requests are welcome.
 
 If this piece of software brought value to you/your organization,
 
-<a href="https://www.buymeacoffee.com/joejoe" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-white.png" alt="Buy Me A Coffee" style="width: 150px !important;" ></a>
+<a href="https://www.buymeacoffee.com/joejoe" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-white.png" alt="Buy Me A Coffee" width="150" ></a>
