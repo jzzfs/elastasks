@@ -150,7 +150,10 @@ export class TasksComponent implements OnInit {
       ) {
         this.notification.success(
           "Task Cancellation success",
-          JSON.stringify(r)
+          JSON.stringify(r),
+          {
+            nzPlacement: "bottomRight"
+          }
         );
         setTimeout(async () => {
           await this.doFetch();
@@ -175,7 +178,8 @@ export class TasksComponent implements OnInit {
         `Task Cancellation failure: ${error.status}`,
         text,
         {
-          nzDuration: 20e3
+          nzDuration: 20e3,
+          nzPlacement: "bottomRight"
         }
       );
 
