@@ -28,6 +28,8 @@
                         nzBreakWord>Action</th>
                     <th nzWidth="120px"
                         nzBreakWord>Description</th>
+                    <th nzWidth="95px"
+                        nzBreakWord>Status</th>
                     <th nzWidth="95px">Start</th>
                     <th nzWidth="80px">Running</th>
                     <th nzRight
@@ -47,6 +49,7 @@
                             </td>
                             <td class="do-ellipsps">{{ item.action }}</td>
                             <td nzBreakWord>{{ item.description }}</td>
+                            <td nzBreakWord>{{ item.status?.phase }}</td>
                             <td>{{ item.start_time | date:'MM/dd/yy  HH:mm:ss' }}</td>
                             <td>{{ item.running_time }}</td>
                             <ng-template #iconTpl>

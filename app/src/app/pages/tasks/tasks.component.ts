@@ -126,20 +126,18 @@ export class TasksComponent implements OnInit {
     button_ref.disabled = true;
 
     try {
-      const r = (await this.es.cancelTask(
-        `${node_id}:${task_id}`
-      )) as HttpResponse<any>;
-
+      const r = (await this.es.cancelTask(`${node_id}:${task_id}`)) as any;
       if (
-        200 <= r.status &&
-        r.status <= 300 &&
-        (!r.body.node_failures ||
-          Object.keys(r.body.node_failures).length === 0)
+        !r.node_failures ||
+        (r.node_failures && Object.keys(r.node_failures).length === 0)
       ) {
         this.notification.success(
           "Task Cancellation success",
           JSON.stringify(r)
         );
+        setTimeout(async () => {
+          await this.doFetch();
+        }, 1e3);
       } else {
         throw new Object({
           status: 500,

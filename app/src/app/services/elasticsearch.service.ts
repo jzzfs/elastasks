@@ -159,14 +159,12 @@ export class ElasticsearchService {
   ): Promise<Task[] | Error> {
     let resp_promise: Promise<ITasksGroupedByParentsResponse | any>;
 
-    if (environment.production) {
+    if (environment.production || true) {
       resp_promise = this.http
         .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
           headers: this.getCommonHeaders()
         })
         .toPromise();
-    } else {
-      resp_promise = this.http.get("...").toPromise();
     }
 
     return new Promise(async (resolve, reject) => {
@@ -187,7 +185,8 @@ export class ElasticsearchService {
     return this.http
       .post(`${this.host}/_tasks/${task_path}/_cancel`, null, {
         params: {
-          // wait_for_completion: "true"
+          // TODO: only allowed in >=7.8
+          //wait_for_completion: "true"
         },
         headers: this.getCommonHeaders()
       })
