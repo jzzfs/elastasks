@@ -1,7 +1,3 @@
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;800&display=swap');
-</style>
-
 <p align="center">
   <a href="https://elastasks.vercel.app/">
     <h2 align="center" style="margin-bottom: -20px">🔦</h2>
