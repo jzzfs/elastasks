@@ -1,10 +1,12 @@
-<p align="center">
-  <a href="https://elastasks.vercel.app/">
-    <h2 align="center" style="margin-bottom: -20px">🔦</h2>
-    <h2 align="center" style="margin-bottom: -10px">elasTasks</h2>
+<p align="center" style="text-align: center">
+  <a href="https://elastasks.vercel.app/" style="text-align: center">
+    <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -20px">🔦</h3>
+    <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -10px">elasTasks</h3>
   </a>
   <p align="center">The missing UI wrapper around selected parts of the ElasticSearch Tasks API</p>
 </p>
+
+---
 
 ![Demo](https://i.ibb.co/XDdGLPx/download-2.png)
 
