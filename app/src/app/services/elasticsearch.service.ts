@@ -4,7 +4,8 @@ import { BehaviorSubject } from "rxjs";
 import {
   ITasksGroupedByParentsResponse,
   ITasksResponseType,
-  Task
+  Task,
+  TtaskActions
 } from "../interfaces/tasks";
 import { transformTasksResponse } from "../pages/tasks/helpers";
 import { isLocalNetwork } from "./helpers";
@@ -161,14 +162,26 @@ export class ElasticsearchService {
   }
 
   async fetchTasks(
-    group_by: ITasksResponseType = "parents"
+    group_by: ITasksResponseType = "parents",
+    opts?: {
+      actions?: TtaskActions[];
+    }
   ): Promise<Task[] | Error> {
     let resp_promise: Promise<ITasksGroupedByParentsResponse | any>;
 
+    const actions_string =
+      opts && opts.actions && opts.actions.length
+        ? opts.actions.join(",")
+        : "*";
+
     if (environment.production || true) {
       resp_promise = this.http
-        .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
-          headers: this.getCommonHeaders()
+        .get(`${this.host}/_tasks?human&detailed`, {
+          headers: this.getCommonHeaders(),
+          params: {
+            group_by,
+            actions: actions_string
+          }
         })
         .toPromise();
     }

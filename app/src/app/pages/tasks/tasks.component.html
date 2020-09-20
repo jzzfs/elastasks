@@ -1,18 +1,27 @@
-<ng-container *ngIf="tasksList && !tasksList.length">
-    <nz-spin [nzSpinning]="true">
-        <nz-empty></nz-empty>
-    </nz-spin>
-</ng-container>
+<ng-container *ngIf="tasksList">
+    <section class="filters">
+        <button nz-button
+                (click)="doFetch()"
+                nz-tooltip
+                nzTooltipTitle="Click to Refresh"
+                nzType="primary"
+                nzSize="large">Updated @ {{lastRefreshedAt | date:'h:mm:ss a'}}</button>
 
-<ng-container *ngIf="tasksList && tasksList.length">
-    <button nz-button
-            (click)="doFetch()"
-            nz-tooltip
-            nzTooltipTitle="Click to Refresh"
-            nzType="primary"
-            style="margin-bottom: 20px">Updated @ {{lastRefreshedAt | date:'HH:mm:ss'}}</button>
+        <nz-select style="width: 340px"
+                   nz-tooltip
+                   nzTooltipTitle="Choose one or more"
+                   nzMode="multiple"
+                   nzPlaceHolder="Filter by Action(s)"
+                   nzShowArrow="true"
+                   nzAllowClear="true"
+                   nzSize="large"
+                   [nzOptions]="listOfActions"
+                   [(ngModel)]="listOfSelectedActions"
+                   (ngModelChange)="doFetch()"> </nz-select>
+    </section>
 
-    <nz-spin [nzSpinning]="loading">
+    <nz-spin *ngIf="tasksList.length"
+             [nzSpinning]="loading">
         <nz-table #expandTable
                   nzBordered
                   nzSize="small"
@@ -30,7 +39,7 @@
                         nzBreakWord>Description</th>
                     <th nzWidth="95px"
                         nzBreakWord>Status</th>
-                    <th nzWidth="95px">Start</th>
+                    <th nzWidth="100px">Start</th>
                     <th nzWidth="80px">Running</th>
                     <th nzRight
                         nzWidth="95px">Action</th>
@@ -47,10 +56,11 @@
                                 (nzExpandChange)="collapse(taskTree[data.id], item, $event)">
                                 {{ item.id }}
                             </td>
-                            <td class="do-ellipsps">{{ item.action }}</td>
+                            <td class="do-ellipsps"><span nz-tooltip
+                                      nzTooltipTitle="{{ item.action }}">{{ item.action }}</span></td>
                             <td nzBreakWord>{{ item.description }}</td>
                             <td nzBreakWord>{{ item.status?.phase }}</td>
-                            <td>{{ item.start_time | date:'MM/dd/yy  HH:mm:ss' }}</td>
+                            <td>{{ item.start_time | date:'MM/dd h:mm:ss a' }}</td>
                             <td>{{ item.running_time }}</td>
                             <ng-template #iconTpl>
                                 <i nz-icon
@@ -77,4 +87,6 @@
             </tbody>
         </nz-table>
     </nz-spin>
+
+    <nz-empty *ngIf="!tasksList.length"></nz-empty>
 </ng-container>

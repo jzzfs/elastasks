@@ -19,15 +19,16 @@ import {
   NzSpinModule,
   NzStatisticModule,
   NzGridModule,
-  NzToolTipModule
+  NzToolTipModule,
+  NzSelectModule
 } from "ng-zorro-antd";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 @NgModule({
   imports: [
     CommonModule,
-
+    FormsModule,
     NzInputModule,
     ReactiveFormsModule,
     NzButtonModule,
@@ -45,6 +46,7 @@ import { CommonModule } from "@angular/common";
     NzStatisticModule,
     NzGridModule,
     NzToolTipModule,
+    NzSelectModule,
     TasksRoutingModule
   ],
   declarations: [TasksComponent],

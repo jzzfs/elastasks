@@ -82,6 +82,6 @@ nz-content {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 190px;
+    max-width: calc(224px - 60px);
   }
 }

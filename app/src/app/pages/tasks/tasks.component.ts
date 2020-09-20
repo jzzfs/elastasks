@@ -1,10 +1,15 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectorRef
+} from "@angular/core";
 import { ElasticsearchService } from "src/app/services/elasticsearch.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
-import { Task } from "src/app/interfaces/tasks";
+import { Task, TtaskActions } from "src/app/interfaces/tasks";
 import { NzNotificationService, NzButtonComponent } from "ng-zorro-antd";
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 
 type TtaskTree = { [key: string]: Task[] };
 @Component({
@@ -17,7 +22,8 @@ export class TasksComponent implements OnInit {
   constructor(
     private es: ElasticsearchService,
     private router: Router,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private cd: ChangeDetectorRef
   ) {
     this.tasksList$.subscribe((_) => {
       this.lastRefreshedAt = new Date();
@@ -30,6 +36,14 @@ export class TasksComponent implements OnInit {
   public taskTree: TtaskTree = {};
 
   lastRefreshedAt: Date;
+  listOfActions: Array<{ value: TtaskActions; label: TtaskActions }> = ([
+    "*monitor*",
+    "*reindex*",
+    "*search*"
+  ] as TtaskActions[]).map((v) => {
+    return { value: v, label: v };
+  });
+  listOfSelectedActions: TtaskActions[] = [];
 
   public get tasksList() {
     return this.tasksList$.value;
@@ -87,7 +101,9 @@ export class TasksComponent implements OnInit {
   async doFetch() {
     this.loading = true;
 
-    const r = await this.es.fetchTasks();
+    const r = await this.es.fetchTasks("parents", {
+      actions: this.listOfSelectedActions
+    });
     if (r && !(r instanceof Error)) {
       const tree: TtaskTree = {};
 
@@ -99,6 +115,7 @@ export class TasksComponent implements OnInit {
 
       this.taskTree = tree;
       this.loading = false;
+      this.cd.detectChanges();
     }
   }
 

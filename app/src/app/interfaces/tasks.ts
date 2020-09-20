@@ -1,4 +1,7 @@
 export type ITasksResponseType = "nodes" | "parents" | "none";
+
+const actions = ["*monitor*", "*search*", "*reindex*"] as const;
+export type TtaskActions = typeof actions[number];
 export interface ITasksGroupedByParentsResponse {
   tasks?: { [key: string]: Task };
 }

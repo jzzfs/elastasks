@@ -17,3 +17,17 @@ tr.darker,
 td.darker {
   background: #f6f6f6;
 }
+
+.filters {
+  min-height: 70px;
+  display: flex;
+  align-items: flex-start;
+
+  nz-select {
+    margin-left: 15px;
+
+    nz-select-top-control {
+      max-height: 40px;
+    }
+  }
+}
