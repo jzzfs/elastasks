@@ -23,9 +23,11 @@
                   [nzScroll]="{ y: '65vh' }">
             <thead>
                 <tr>
-                    <th>Task ID</th>
-                    <th>Action</th>
-                    <th>Description</th>
+                    <th nzWidth="95px">Task ID</th>
+                    <th nzWidth="95px"
+                        nzBreakWord>Action</th>
+                    <th nzWidth="120px"
+                        nzBreakWord>Description</th>
                     <th nzWidth="95px">Start</th>
                     <th nzWidth="80px">Running</th>
                     <th nzRight
@@ -43,7 +45,7 @@
                                 (nzExpandChange)="collapse(taskTree[data.id], item, $event)">
                                 {{ item.id }}
                             </td>
-                            <td>{{ item.action }}</td>
+                            <td class="do-ellipsps">{{ item.action }}</td>
                             <td nzBreakWord>{{ item.description }}</td>
                             <td>{{ item.start_time | date:'MM/dd/yy  HH:mm:ss' }}</td>
                             <td>{{ item.running_time }}</td>

@@ -6,7 +6,8 @@
   padding: 12px;
 }
 
-tr td:first-child {
+tr td:first-child,
+.do-ellipsps {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

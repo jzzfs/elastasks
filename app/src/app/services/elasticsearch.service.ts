@@ -8,6 +8,7 @@ import {
 } from "../interfaces/tasks";
 import { transformTasksResponse } from "../pages/tasks/helpers";
 import { isLocalNetwork } from "./helpers";
+import { environment } from "src/environments/environment";
 
 export interface IClientSettings {
   host: string;
@@ -106,10 +107,11 @@ export class ElasticsearchService {
     };
   }
 
-  private getCommonHeaders() {
+  private getCommonHeaders(extras = {}) {
     return new HttpHeaders({
       ...this.constructBasicAuthHeader(),
-      ...this.constructApiKeyHeader()
+      ...this.constructApiKeyHeader(),
+      ...extras
     });
   }
 
@@ -157,11 +159,15 @@ export class ElasticsearchService {
   ): Promise<Task[] | Error> {
     let resp_promise: Promise<ITasksGroupedByParentsResponse | any>;
 
-    resp_promise = this.http
-      .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
-        headers: this.getCommonHeaders()
-      })
-      .toPromise();
+    if (environment.production) {
+      resp_promise = this.http
+        .get(`${this.host}/_tasks?human&detailed&group_by=${group_by}`, {
+          headers: this.getCommonHeaders()
+        })
+        .toPromise();
+    } else {
+      resp_promise = this.http.get("...").toPromise();
+    }
 
     return new Promise(async (resolve, reject) => {
       try {
