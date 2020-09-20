@@ -5,6 +5,13 @@
 </ng-container>
 
 <ng-container *ngIf="tasksList && tasksList.length">
+    <button nz-button
+            (click)="doFetch()"
+            nz-tooltip
+            nzTooltipTitle="Click to Refresh"
+            nzType="primary"
+            style="margin-bottom: 20px">Updated @ {{lastRefreshedAt | date:'HH:mm:ss'}}</button>
+
     <nz-spin [nzSpinning]="loading">
         <nz-table #expandTable
                   nzBordered

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { ElasticsearchService } from "src/app/services/elasticsearch.service";
 import { Router } from "@angular/router";
 import { BehaviorSubject } from "rxjs";
@@ -10,20 +10,26 @@ type TtaskTree = { [key: string]: Task[] };
 @Component({
   selector: "app-tasks",
   templateUrl: "./tasks.component.html",
-  styleUrls: ["./tasks.component.scss"]
+  styleUrls: ["./tasks.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class TasksComponent implements OnInit {
   constructor(
     private es: ElasticsearchService,
     private router: Router,
     private notification: NzNotificationService
-  ) {}
+  ) {
+    this.tasksList$.subscribe((_) => {
+      this.lastRefreshedAt = new Date();
+    });
+  }
 
   loading = false;
 
   private tasksList$: BehaviorSubject<Task[]> = new BehaviorSubject([]);
-
   public taskTree: TtaskTree = {};
+
+  lastRefreshedAt: Date;
 
   public get tasksList() {
     return this.tasksList$.value;
@@ -78,19 +84,7 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  async ngOnInit() {
-    if (this.es.hasHost()) {
-      this.es.initClient();
-      const r = (await this.es.ping()) as any;
-      if (!r || (r && typeof r.tagline !== "string")) {
-        this.router.navigate(["/login"]);
-        return;
-      }
-    } else {
-      this.router.navigate(["/login"], { queryParams: { force: true } });
-      return;
-    }
-
+  async doFetch() {
     this.loading = true;
 
     const r = await this.es.fetchTasks();
@@ -106,6 +100,22 @@ export class TasksComponent implements OnInit {
       this.taskTree = tree;
       this.loading = false;
     }
+  }
+
+  async ngOnInit() {
+    if (this.es.hasHost()) {
+      this.es.initClient();
+      const r = (await this.es.ping()) as any;
+      if (!r || (r && typeof r.tagline !== "string")) {
+        this.router.navigate(["/login"]);
+        return;
+      }
+    } else {
+      this.router.navigate(["/login"], { queryParams: { force: true } });
+      return;
+    }
+
+    this.doFetch();
   }
 
   async doCancelTask(
