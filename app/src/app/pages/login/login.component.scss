@@ -5,3 +5,9 @@
 .ant-card-body {
   padding: 12px;
 }
+
+.ant-checkbox-wrapper-checked {
+  nz-tag {
+    visibility: hidden;
+  }
+}

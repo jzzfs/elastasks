@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import {
   ElasticsearchService,
@@ -11,7 +11,8 @@ import { merge } from "rxjs";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"]
+  styleUrls: ["./login.component.scss"],
+  encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit {
   isLoginModalVisible = true;
@@ -65,7 +66,8 @@ export class LoginComponent implements OnInit {
       username: [null],
       password: [null],
       apiKey: [null],
-      apiKeyId: [null]
+      apiKeyId: [null],
+      useCorsAnywhere: [true]
     });
 
     if (this.es.hasHost()) {
@@ -159,7 +161,8 @@ export class LoginComponent implements OnInit {
       host,
       auth: {
         ...tmp
-      }
+      },
+      useCorsAnywhere: tmp.useCorsAnywhere
     } as IClientSettings;
 
     Object.entries(this.validateForm.controls).map(([name, control]) => {

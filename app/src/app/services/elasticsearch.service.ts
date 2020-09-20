@@ -18,6 +18,7 @@ export interface IClientSettings {
     apiKey?: string;
     apiKeyId?: string;
   };
+  useCorsAnywhere?: boolean;
 }
 
 @Injectable({
@@ -77,6 +78,10 @@ export class ElasticsearchService {
       return actual_host;
     }
 
+    if (!this.client.useCorsAnywhere) {
+      return actual_host;
+    }
+
     // wrap due to Allow-Acces-Origin reasons
     return `https://cors-anywhere.herokuapp.com/${actual_host}`;
   }
@@ -122,6 +127,7 @@ export class ElasticsearchService {
 
     this.client = {
       host: opts.host,
+      useCorsAnywhere: opts.useCorsAnywhere,
       ...(!opts.auth
         ? {}
         : {

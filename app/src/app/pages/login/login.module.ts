@@ -11,9 +11,11 @@ import {
   NzCardModule,
   NzDividerModule,
   NzAlertModule,
-  NzModalModule
+  NzModalModule,
+  NzCheckboxModule,
+  NzTagModule
 } from "ng-zorro-antd";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 @NgModule({
@@ -22,12 +24,15 @@ import { CommonModule } from "@angular/common";
     NzFormModule,
     NzSelectModule,
     NzInputModule,
+    FormsModule,
     ReactiveFormsModule,
     NzButtonModule,
     NzCardModule,
     NzDividerModule,
     NzAlertModule,
     NzModalModule,
+    NzCheckboxModule,
+    NzTagModule,
     LoginRoutingModule
   ],
   declarations: [LoginComponent],

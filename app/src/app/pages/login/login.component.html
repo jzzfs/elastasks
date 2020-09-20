@@ -32,6 +32,15 @@
                  placeholder="https://instance.com:9200" />
         </nz-form-control>
       </nz-form-item>
+      <nz-form-control [nzOffset]="3"
+                       [nzSpan]="14">
+        <label nz-checkbox
+               formControlName="useCorsAnywhere">Use <a href="https://github.com/Rob--W/cors-anywhere/"
+             target="_blank">CorsAnywhere</a>&nbsp;
+          <nz-tag nzColor="warning">If unchecked, the system may fail to connect.
+          </nz-tag>
+        </label>
+      </nz-form-control>
     </nz-card>
 
     <br>
