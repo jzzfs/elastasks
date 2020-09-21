@@ -1,17 +1,11 @@
 <nz-modal [(nzVisible)]="isLoginModalVisible"
           [nzFooter]="null"
+          nzClosable="false"
           nzTitle="Connect to Host"
           nzWidth="960px">
   <form nz-form
         [formGroup]="validateForm"
         (ngSubmit)="submitForm()">
-
-    <nz-alert nzType="success"
-              [ngStyle]="{'margin-bottom.px': 20}"
-              [nzCloseable]="true"
-              nzMessage="elasTasks is a client-side application with no server backend.
-              Data lives only on your machine/browser.
-              No information or ES data is sent to any server."></nz-alert>
 
     <nz-card [nzTitle]="">
       <nz-form-item>
@@ -128,6 +122,13 @@
     </nz-card>
 
     <br>
+
+    <nz-alert nzType="success"
+              [ngStyle]="{'margin-bottom.px': 20}"
+              [nzCloseable]="true"
+              nzMessage="elasTasks is a client-side application with no server backend.
+              Data lives only on your machine/browser.
+              No information or ES data is sent to any server."></nz-alert>
 
     <div nz-col
          nzSpan="24">

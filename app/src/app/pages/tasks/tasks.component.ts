@@ -124,11 +124,17 @@ export class TasksComponent implements OnInit {
       this.es.initClient();
       const r = (await this.es.ping()) as any;
       if (!r || (r && typeof r.tagline !== "string")) {
-        this.router.navigate(["/login"]);
+        this.router.navigate(["/login"], {
+          queryParams: {
+            infoMsg: true
+          }
+        });
         return;
       }
     } else {
-      this.router.navigate(["/login"], { queryParams: { force: true } });
+      this.router.navigate(["/login"], {
+        queryParams: { force: true, infoMsg: true }
+      });
       return;
     }
 

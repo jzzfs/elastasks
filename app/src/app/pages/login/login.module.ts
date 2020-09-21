@@ -13,7 +13,8 @@ import {
   NzAlertModule,
   NzModalModule,
   NzCheckboxModule,
-  NzTagModule
+  NzTagModule,
+  NzMessageModule
 } from "ng-zorro-antd";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -33,6 +34,7 @@ import { CommonModule } from "@angular/common";
     NzModalModule,
     NzCheckboxModule,
     NzTagModule,
+    NzMessageModule,
     LoginRoutingModule
   ],
   declarations: [LoginComponent],

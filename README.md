@@ -3,7 +3,7 @@
     <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -45px">🔦</h3>
     <h3 align="center" style="font-weight: bold; text-align: center; font-size: 34px; margin-bottom: -10px">elasTasks</h3>
   </a>
-  <p align="center">The missing UI wrapper around selected parts of the ElasticSearch Tasks API</p>
+  <p align="center">The missing UI wrapper around selected parts of the <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html" target="_blank">ElasticSearch Tasks API</a></p>
 </p>
 
 ---
@@ -14,7 +14,7 @@
 
 ## Background
 
-Inspired by a [closed Kibana github issue](https://github.com/elastic/kibana/issues/42621):
+This application attempts to solve the problem detailed in the [unresolved Kibana issue #42621](https://github.com/elastic/kibana/issues/42621):
 
 > Long-running tasks can leak processes and kill a cluster. Users need a way to detect slow queries and kill these tasks. We can start down the road of addressing this problem by building a “Tasks” app that show a list of all tasks that are running, indicate ones that are cancellable, display any available information that the API provides, and give users the ability to cancel these tasks.
 
@@ -34,7 +34,7 @@ Locally:
 
 elasTasks is a client-side application with no server backend. Data lives only on your machine/browser. No information or ES data is sent to any server.
 
-When connecting to an ElasticSearch host you may opt out of [CorsAnywhere](https://github.com/Rob--W/cors-anywhere/) -- a NodeJS reverse proxy which adds CORS headers to the proxied request.
+When connecting to an ElasticSearch host you may opt out of enabling [CorsAnywhere](https://github.com/Rob--W/cors-anywhere/) -- a NodeJS reverse proxy which adds CORS headers to the proxied request.
 
 ## Contributing
 

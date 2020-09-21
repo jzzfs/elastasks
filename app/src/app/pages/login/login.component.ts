@@ -7,6 +7,8 @@ import {
 import { Router, ActivatedRoute } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
 import { merge } from "rxjs";
+import { NzMessageService } from "ng-zorro-antd";
+import { DeviceDetectorService } from "ngx-device-detector";
 
 @Component({
   selector: "app-login",
@@ -29,11 +31,30 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private es: ElasticsearchService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private message: NzMessageService,
+    private device: DeviceDetectorService
   ) {
     if (this.route.snapshot.queryParamMap.get("force")) {
       this.es.flushHost();
       this.isLoginModalVisible = true;
+    }
+
+    if (this.route.snapshot.queryParamMap.get("infoMsg")) {
+      this.message.warning(
+        "Could not establish connection. Please connect to your cluster first.",
+        {
+          nzDuration: 5e3,
+          nzPauseOnHover: true
+        }
+      );
+    }
+
+    if (!this.device.isDesktop()) {
+      this.message.info("This application is optimized for desktops.", {
+        nzDuration: 8e3,
+        nzPauseOnHover: true
+      });
     }
   }
 
